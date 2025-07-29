@@ -60,7 +60,7 @@ class BookRepositoryTest {
 
     @Test
     void createBook_ShouldReturnCreatedBook() { 
-        Book createdBook = bookRepository.save(new Book(5L, "New Book", "New Author"));
+        Book createdBook = bookRepository.save(new Book(null, "New Book", "New Author"));
 
         bookRepository.findById(createdBook.getId()).ifPresentOrElse(
             book -> {

@@ -7,12 +7,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.example.demo.dto.BookRequest;
 import com.example.demo.model.Book;
 import com.example.demo.security.JwtFilter;
 import com.example.demo.service.BookService;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -84,16 +86,17 @@ class BookControllerTest {
 
     @Test
     void createBook_ShouldReturnCreatedBook() throws Exception {
-        // Create a book object to be returned
-        Book book = new Book(1L, "Effective Java", "Joshua");
-        when(bookService.createBook(book)).thenReturn(book);
+        BookRequest bookRequest = new BookRequest("Effective Java", "Joshua");
+        Book savedBook = new Book(null, "Effective Java", "Joshua"); // ID should be null for new entities
+        when(bookService.createBook(bookRequest)).thenReturn(savedBook);
 
-        // Perform the POST request and verify the response
         mockMvc.perform(post("/api/books")
                 .contentType("application/json")
-                .content("{\"id\":1,\"title\":\"Effective Java\",\"author\":\"Joshua\"}"))
+                .content("{\"title\":\"Effective Java\",\"author\":\"Joshua\"}"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Effective Java"))
                 .andExpect(jsonPath("$.author").value("Joshua"));
     }
+
 }

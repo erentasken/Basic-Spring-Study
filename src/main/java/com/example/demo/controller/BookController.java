@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import lombok.RequiredArgsConstructor;
 
+import com.example.demo.dto.BookRequest;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 
@@ -41,8 +42,7 @@ public class BookController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Book> createBook(@RequestBody Book book) { 
-        book.setId(null);
+    public ResponseEntity<Book> createBook(@RequestBody BookRequest book) { 
         return ResponseEntity.ok(bookService.createBook(book));
     }
 
