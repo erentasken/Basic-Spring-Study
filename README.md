@@ -27,10 +27,6 @@
 ---
 
 ## TO-DO List
-
-### Performance/Security
-- **Rate Limiting** (e.g., using Bucket4j or Spring filters)
-
 ### Monitoring
 - **Actuator**, **Prometheus**, or **Grafana** integration
 
