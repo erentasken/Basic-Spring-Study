@@ -23,12 +23,3 @@
 ### DevOps
 - **GitHub Actions**
   - Basic CI/CD workflow setup
-
----
-
-## TO-DO List
-### Monitoring
-- **Actuator**, **Prometheus**, or **Grafana** integration
-
-### Logging
-- Centralized logging using **Logback**, **SLF4J**, or integration with tools like **ELK Stack**
