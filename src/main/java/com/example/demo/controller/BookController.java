@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import lombok.RequiredArgsConstructor;
 
 import com.example.demo.model.Book;
@@ -38,7 +40,9 @@ public class BookController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> createBook(@RequestBody Book book) { 
+        book.setId(null);
         return ResponseEntity.ok(bookService.createBook(book));
     }
 

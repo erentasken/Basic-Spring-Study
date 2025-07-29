@@ -9,8 +9,8 @@ import com.example.demo.dto.AuthenticationResponse;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.model.User;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,19 +18,18 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public String register(@RequestBody AuthenticationRequest request) {
-        // Logic for user registration
-
         if (userRepository.findByUsername(request.getUsername()).isPresent()) { 
             throw new RuntimeException("Username already exists");
         }
 
-
         User user = User.builder()
                 .username(request.getUsername())
-                .password(request.getPassword()) // In a real application, ensure to hash the password
+                .password(passwordEncoder.encode(request.getPassword())) // Hash the password!
+                .role("USER")
                 .build();
 
         userRepository.save(user);
@@ -40,12 +39,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody AuthenticationRequest request) {
-        // Logic for user authentication
-
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!user.getPassword().equals(request.getPassword())) { // In a real application, compare hashed passwords
+        // Use passwordEncoder to check the password!
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
@@ -53,6 +51,4 @@ public class AuthController {
 
         return new AuthenticationResponse(token);
     }
-
-
 }

@@ -14,10 +14,10 @@ import com.example.demo.service.BookService;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.List;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest(BookController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -51,7 +51,6 @@ class BookControllerTest {
         when(bookService.getBookById(999L)).thenReturn(null);
         // Perform the GET request and verify the response
         mockMvc.perform(get("/api/books/999"))
-                .andDo(print()) // This prints the output to the console
                 .andExpect(status().isNotFound());
     }
 
@@ -81,5 +80,20 @@ class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("Effective Java"))
                 .andExpect(jsonPath("$[1].title").value("Java Concurrency in Practice"));
+    }
+
+    @Test
+    void createBook_ShouldReturnCreatedBook() throws Exception {
+        // Create a book object to be returned
+        Book book = new Book(1L, "Effective Java", "Joshua");
+        when(bookService.createBook(book)).thenReturn(book);
+
+        // Perform the POST request and verify the response
+        mockMvc.perform(post("/api/books")
+                .contentType("application/json")
+                .content("{\"id\":1,\"title\":\"Effective Java\",\"author\":\"Joshua\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Effective Java"))
+                .andExpect(jsonPath("$.author").value("Joshua"));
     }
 }
