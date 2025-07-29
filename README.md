@@ -3,6 +3,12 @@
 ### Architecture
 - **Basic N-Tier / Layered Architecture** implemented using **Spring Boot**
 
+### Security
+- **Authentication** (e.g., JWT or Spring Security)
+
+### Access Control
+- **RBAC** (Role-Based Access Control)
+
 ### Caching
 - **Redis** for caching mechanisms
 
@@ -21,12 +27,6 @@
 ---
 
 ## TO-DO List
-
-### Security
-- **Authentication** (e.g., JWT or Spring Security)
-
-### Access Control
-- **RBAC** (Role-Based Access Control)
 
 ### Performance/Security
 - **Rate Limiting** (e.g., using Bucket4j or Spring filters)
