@@ -1,14 +1,13 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import lombok.RequiredArgsConstructor;
 
+import com.example.demo.dto.BookRequest;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 
@@ -22,23 +21,29 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping("/{id}")
-    public Book getBookById(@PathVariable Long id) { 
-        return bookService.getBookById(id);
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+        Book book = bookService.getBookById(id);
+        if (book != null) {
+            return ResponseEntity.ok(book);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/author/{author}")
-    public List<Book> getBooksByAuthor(@PathVariable String author) { 
-        return bookService.getBooksByAuthor(author);
+    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable String author) { 
+        return ResponseEntity.ok(bookService.getBooksByAuthor(author));
     }
 
     @GetMapping
-    public List<Book> getAllBooks() { 
-        return bookService.getAllBooks();
+    public ResponseEntity<List<Book>> getAllBooks() { 
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @PostMapping
-    public Book createBook(@RequestBody Book book) { 
-        return bookService.createBook(book);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Book> createBook(@RequestBody BookRequest book) { 
+        return ResponseEntity.ok(bookService.createBook(book));
     }
 
 

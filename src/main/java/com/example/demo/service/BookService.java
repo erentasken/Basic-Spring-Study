@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import com.example.demo.dto.BookRequest;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
 
@@ -37,8 +38,11 @@ public class BookService {
             @CacheEvict(value = "book", key = "#book.id"),
             @CacheEvict(value = "allBooks", allEntries = true)
     })
-    public Book createBook(Book book) {
-        return bookRepository.save(book);
+    public Book createBook(BookRequest book) {
+        Book newBook = new Book();
+        newBook.setTitle(book.getTitle());
+        newBook.setAuthor(book.getAuthor());
+        return bookRepository.save(newBook);
     }
 
     @Cacheable(value = "allBooks")

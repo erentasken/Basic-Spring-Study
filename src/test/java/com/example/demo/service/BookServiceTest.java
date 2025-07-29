@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -54,4 +55,20 @@ class BookServiceTest {
         verify(bookRepository, times(1)).findById(1L);
     }
     
+    @Test
+    void getBooksByAuthor_ShouldReturnBooks_WhenBooksExist() {
+        // Arrange
+        Book book1 = new Book(1L, "Book One", "Author A");
+        Book book2 = new Book(2L, "Book Two", "Author A");
+        when(bookRepository.findByAuthor("Author A")).thenReturn(List.of(book1, book2));
+
+        // Act
+        List<Book> books = bookService.getBooksByAuthor("Author A");
+
+        // Assert
+        assertEquals(2, books.size());
+        assertEquals("Book One", books.get(0).getTitle());
+        assertEquals("Book Two", books.get(1).getTitle());
+        verify(bookRepository, times(1)).findByAuthor("Author A");
+    }
 }
